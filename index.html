@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyPulse - Habit Tracker</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #e0f7fa;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #006064;
+    }
+    .habit-form {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 220px;
+      margin-right: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #00796b;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    li {
+      background: white;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .done {
+      text-decoration: line-through;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>DailyPulse Habit Tracker</h1>
+
+  <div class="habit-form">
+    <input type="text" id="habitInput" placeholder="New habit...">
+    <button onclick="addHabit()">Add Habit</button>
+  </div>
+
+  <ul id="habitList"></ul>
+
+  <script>
+    let habits = JSON.parse(localStorage.getItem('habits')) || [];
+
+    function renderHabits() {
+      const list = document.getElementById('habitList');
+      list.innerHTML = '';
+      habits.forEach((habit, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span class="${habit.done ? 'done' : ''}">${habit.text}</span>
+          <button onclick="toggleDone(${index})">Done</button>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function addHabit() {
+      const input = document.getElementById('habitInput');
+      const text = input.value.trim();
+      if (text !== '') {
+        habits.push({ text: text, done: false });
+        saveHabits();
+        renderHabits();
+        input.value = '';
+      }
+    }
+
+    function toggleDone(index) {
+      habits[index].done = !habits[index].done;
+      saveHabits();
+      renderHabits();
+    }
+
+    function saveHabits() {
+      localStorage.setItem('habits', JSON.stringify(habits));
+    }
+
+    renderHabits();
+  </script>
+
+</body>
+</html>
